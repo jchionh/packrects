@@ -54,10 +54,13 @@ function drawProgress() {
 	}
 }
 
-var intervalHandle;
+var intervalHandle = null;
 
 function GetPacked() {
 	//xlb1.gRenderer2D.DrawText('Packing rects........', 800*xlb1.gDevicePixelRatio, 30*xlb1.gDevicePixelRatio, '#00FF00');
+	if (intervalHandle != null) {
+		clearInterval(intervalHandle);
+	}
 	intervalHandle = setInterval(drawProgress, 100);
 	var httpReq = new xlb1.http.HttpRequest('randomboxes', dataLoaded);
 	httpReq.Send();
@@ -68,6 +71,7 @@ window['GetPacked'] = GetPacked;
 
 function dataLoaded(dataText, responseType) {
 	clearInterval(intervalHandle);
+	intervalHandle = null;
 	//xlb1.gRenderer2D.DrawText(dataText, 0, 30, '#00FF00');
 	var boxes = JSON.parse(dataText);
 	drawBoxes(boxes);
