@@ -210,6 +210,7 @@ public class RectContainer extends BasicRect {
      * iterate the container and return the rect that is the most right
      * @return
      */
+    /*
     private PackerRect getRightMostRect() {
         int maxX = 0;
         PackerRect rightmost = null;
@@ -225,11 +226,13 @@ public class RectContainer extends BasicRect {
         // after we step thru everything, return rightmost
         return rightmost;
     }
+    */
     
     /**
      * iterate the container and return the rect that is the most bottom
      * @return
      */
+    /*
     private PackerRect getBottomMostRect() {
         int maxY = 0;
         PackerRect botmost = null;
@@ -245,6 +248,7 @@ public class RectContainer extends BasicRect {
         // after we step thru everything, return botmost
         return botmost;
     }
+    */
     
     /**
      * calcualte our bounding box
