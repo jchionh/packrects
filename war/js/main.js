@@ -42,8 +42,24 @@ function mainClearCanvas() {
 	xlb1.gCanvasContext.restore();
 };
 
+var progressIndex = 0;
+
+function drawProgress() {
+	mainClearCanvas();
+	var progressChar = xlb1.spinner.PROGRESS_CHARS[progressIndex];
+	xlb1.gRenderer2D.DrawText('Packing rects... ' + progressChar, 800*xlb1.gDevicePixelRatio, 30*xlb1.gDevicePixelRatio, '#00FF00');
+	progressIndex++;
+	if (progressIndex > xlb1.spinner.PROGRESS_CHARS.length - 1) {
+		progressIndex = 0;
+	}
+}
+
+var intervalHandle;
+
 function GetPacked() {
-	var httpReq = new xlb1.http.HttpRequest('testboxes', dataLoaded);
+	//xlb1.gRenderer2D.DrawText('Packing rects........', 800*xlb1.gDevicePixelRatio, 30*xlb1.gDevicePixelRatio, '#00FF00');
+	intervalHandle = setInterval(drawProgress, 100);
+	var httpReq = new xlb1.http.HttpRequest('randomboxes', dataLoaded);
 	httpReq.Send();
 };
 
@@ -51,6 +67,7 @@ function GetPacked() {
 window['GetPacked'] = GetPacked;
 
 function dataLoaded(dataText, responseType) {
+	clearInterval(intervalHandle);
 	//xlb1.gRenderer2D.DrawText(dataText, 0, 30, '#00FF00');
 	var boxes = JSON.parse(dataText);
 	drawBoxes(boxes);
@@ -61,7 +78,7 @@ function drawBoxes(boxData) {
 	var containerData = boxData.shift();
 	var container = new xlb1.packer.BasicRect(containerData['x'], containerData['y'], containerData['w'], containerData['h'], containerData['id'], containerData['color']);
 	var i = 0;
-	var SCALE = 10 * xlb1.gDevicePixelRatio;
+	var SCALE = 10;
 	var ren = xlb1.gRenderer2D;
 	var textOffsetX = 800 * xlb1.gDevicePixelRatio;
 	var textOffsetY = 50 * xlb1.gDevicePixelRatio;
@@ -70,6 +87,11 @@ function drawBoxes(boxData) {
 	// clean out our rects
 	var rects = [];
 	rects.length = 0;
+	
+	// clear the canvas
+	ren.ClearCanvas();
+	
+	ren.DrawText('-- jPacker --', 800*xlb1.gDevicePixelRatio, 30*xlb1.gDevicePixelRatio, '#00FF00');
 	
 	// iterate and create our rects
 	for (i = 0; i < boxData.length; ++i) {
@@ -88,6 +110,7 @@ function drawBoxes(boxData) {
 		ren.DrawShape(drect.GetRenderPointArray(), '#000000', 1, drect.color);
 		// render their dimensions
 		ren.DrawText('[' + i + '] w: ' + (drect.w / SCALE) + ' h: ' + (drect.h / SCALE) + ' a: ' + (drect.GetArea() / (SCALE * SCALE)), textOffsetX, textOffsetY + (i*textLineOffset), '#00FF00');
+		//ren.DrawText('[' + i + '] w: ' + (drect.w) + ' h: ' + (drect.h) + ' a: ' + (drect.GetArea()), textOffsetX, textOffsetY + (i*textLineOffset), '#00FF00');
 		// render the number
 		var midpoint = drect.GetMidPoint();
 		ren.DrawText('' + i, (midpoint.x * xlb1.gDevicePixelRatio), (midpoint.y * xlb1.gDevicePixelRatio), '#FFFFFF');
@@ -101,6 +124,7 @@ function drawBoxes(boxData) {
 		ren.DrawText('-- packed box --', textOffsetX, textOffsetY + (i*textLineOffset), '#FFFFFF');
 		++i;
 		ren.DrawText('w: ' + (container.w / SCALE) + ' h: ' + (container.h / SCALE) + ' a: ' + (containerArea / (SCALE * SCALE)), textOffsetX, textOffsetY + (i*textLineOffset), '#FFFFFF');
+		//ren.DrawText('w: ' + (container.w) + ' h: ' + (container.h) + ' a: ' + (containerArea), textOffsetX, textOffsetY + (i*textLineOffset), '#FFFFFF');
 		++i;
 		ren.DrawText('space efficiency: ', textOffsetX, textOffsetY + (i*textLineOffset), '#FF00FF' );
 		++i;
