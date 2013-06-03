@@ -12,9 +12,9 @@ import java.util.List;
  */
 public class Packer {
     
+    private static final PackerRectAreaComparatorDsc areaDsc = new PackerRectAreaComparatorDsc();
     
     private List<RectData> dataSet = new LinkedList<RectData>();
-    private PackerRectAreaComparatorDsc areaDsc = new PackerRectAreaComparatorDsc();
     private RectContainer container = new RectContainer();
     
     
